@@ -1,9 +1,10 @@
+
 // CANVAS SETUP
 const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d')
 
 const canvasInfo = {
-    width: 800,
+    width: 900,
     height: 500
 }
 canvas.width = canvasInfo.width
@@ -11,7 +12,7 @@ canvas.height = canvasInfo.height
 
 const gameInfo = {
     start: false,
-    pause: true,
+    pause: true ,
     score: 0,
     gameFrame: 0,
     baseSpeed: 20,
@@ -41,8 +42,7 @@ let canvasPosition = canvas.getBoundingClientRect()
 function randomNumber(max_numb) {
     return (
         Math.floor((Math.random() * max_numb))
-    )
-    
+    ) 
 } 
 
 const mouse = {
@@ -61,13 +61,19 @@ canvas.addEventListener('mouseup', function(e) {
     mouse.click = false
 })
 
+const player1Left = new Image()
+player1Left.src = 'images/player/AttackL (10).png'  // Forward slash; not back slash!!
+const player1Right = new Image()
+player1Right.src = 'images/player/Attack (10).png'
+
+
 // PLAYER CREATION
 class createBall {
     constructor() {
         this.name = 'hero'
         this.x = canvas.width/2
         this.y = canvas.height/2
-        this.radius = 50
+        this.radius = 50 
     }
 
     update() {
@@ -91,65 +97,110 @@ class createBall {
     }
 
     draw() {       
-        ctx.lineWidth = 0.2
+        ctx.lineWidth = 0.1
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
-        ctx.fillStyle = 'black'
+        ctx.fillStyle = 'transparent'
         ctx.fill()
-        ctx.stroke()               
-    }
+        ctx.stroke()  
+        
+        if (this.x > mouse.x) {
+            ctx.drawImage(player1Left, this.x - 80, this.y - 80, this.radius * 3, this.radius * 3)
+        }
+        else {
+            ctx.drawImage(player1Right, this.x - 80, this.y - 80, this.radius * 3, this.radius * 3)
+        }
+        
+    }    
 }
+
+const player1 = new createBall()
 
 // BUBBLE CREATION
 const bubblesArray = []
 
 const bubblesTypeArray = {
-    badBubble: {
-        name: 'good',
-        frequency: 100,
-        radius: 20,
-        speed: 1,
-        colour: 'blue',
-        collided: false,
-        points: -10,
-    },
     goodBubble: {
         name: 'bad',
-        frequency: 60,
+        frequency: 100,
         radius: 30,
         speed: 1.5,
-        colour: 'pink',
+        colour: 'blue',
         collided: false,
         points: 20,
+        image: {
+            src: 'images/enemies/good.png',
+            imgs: 14,
+            adjustX: 50,
+            adjustY: 65,
+            blowup: 3
+        }
+    },
+    badBubble: {
+        name: 'good',
+        frequency: 200,
+        radius: 30,
+        speed: 1,
+        colour: 'orange',
+        collided: false,
+        points: -10,
+        image: {
+            src: 'images/enemies/bad.png',
+            imgs: 8,
+            adjustX: 45,
+            adjustY: 45,
+            blowup: 2.5
+        }
     },
     steelBubble: {
         name: 'steel',
-        frequency: 100,
+        frequency: 250,
         radius: 40,
-        speed: 1,
+        speed: 2,
         colour: 'grey',
         collided: false,
         points: -5,
-        bounceDistance: 100
+        image: {
+            src: 'images/enemies/steel.png',
+            imgs: 11,
+            adjustX: 70,
+            adjustY: 50,
+            blowup: 2.5
+        },
+        bounceDistance: 200,
     },
     slimeBubble: {
         name: 'slime',
-        frequency: 200,
+        frequency: 400,
         radius: 40,
-        speed: 1,
+        speed: 0.5,
         colour: 'green',
         collided: false,
         points: -0.5,
+        image: {
+            src: 'images/enemies/slime.png',
+            imgs: 10,
+            adjustX: 55,
+            adjustY: 45,
+            blowup: 2.5
+        },
         challengeSpeed: 100
     },
     deathBubble: {
         name: 'death',
-        frequency: 100,
+        frequency: 600,
         radius: 50,
-        speed: 1,
+        speed: 0.75,
         colour: 'red',
         collided: false,
-        points: -50
+        points: -50,
+        image: {
+            src: 'images/enemies/death.png',
+            imgs: 10,
+            adjustX: 85,
+            adjustY: 65,
+            blowup: 4
+        }
     }
 }
 
@@ -163,6 +214,7 @@ class createBubble {
         this.cDistance
         this.colour = bubbleType.colour
         this.points = bubbleType.points
+        this.image = bubbleType.image
     }
 
     update() {
@@ -176,9 +228,19 @@ class createBubble {
         ctx.lineWidth = 0.2
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
-        ctx.fillStyle = this.colour
+        // ctx.fillStyle = this.colour
         ctx.fill()
-        ctx.stroke()               
+        ctx.stroke()   
+        
+        const bubimg = new Image()
+        bubimg.src = this.image.src
+        // bub.src = 'enemies/good.png'
+        
+        ctx.drawImage(bubimg, 
+            0, 0, 
+            bubimg.width / this.image.imgs, bubimg.height, 
+            this.x - this.image.adjustX, this.y - this.image.adjustY, 
+            (bubimg.width / this.image.imgs) * this.image.blowup, bubimg.height * this.image.blowup)       
     }
 }
 
@@ -253,7 +315,7 @@ function controlBubbles() {
     }
 }
 
-const player1 = new createBall()
+
 
 function animate() {
     if (gameInfo.pause == false) {
@@ -268,7 +330,7 @@ function animate() {
 
         // Score sheet
         ctx.font = '30px Noto Sans'
-        ctx.fillStyle = 'black'
+        ctx.fillStyle = 'yellow'
         ctx.textAlign = 'left'
         ctx.fillText(gameInfo.score, 20, 50)
     }
@@ -281,7 +343,7 @@ function animate() {
             ctx.font = '30px Noto Sans'
             ctx.fillStyle = 'white'
             ctx.textAlign = 'center'
-            ctx.fillText('Start?', canvas.width / 2, canvas.height / 2)
+            ctx.fillText('Press enter to start', canvas.width / 2, canvas.height / 2)
         }
         else if (gameInfo.start == true && gameInfo.pause == true) {
             ctx.font = '30px Noto Sans'

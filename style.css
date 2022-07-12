@@ -20,14 +20,12 @@ body {
 }
 
 #canvas1 {
-    width: 800px;
+    width: 900px;
     height: 500px;
     border: 4px soild black;
-    background-color: burlywood;
+    /* background-color: burlywood; */
+    background-image: url(./images/backgrounds/angelina-kichukova-1i6mrD_t9gA-unsplash.jpg);
+    background-position: center;
+    background-size: 100%;
 }
 
-button {
-    color: saddlebrown;
-    padding: 1rem;
-    /* display: none; */
-}
