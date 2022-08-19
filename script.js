@@ -343,7 +343,7 @@ function animate() {
             ctx.font = '30px Noto Sans'
             ctx.fillStyle = 'white'
             ctx.textAlign = 'center'
-            ctx.fillText('Press enter to start', canvas.width / 2, canvas.height / 2)
+            ctx.fillText('Press spacebar to enter', canvas.width / 2, canvas.height / 2)
         }
         else if (gameInfo.start == true && gameInfo.pause == true) {
             ctx.font = '30px Noto Sans'
